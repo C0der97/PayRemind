@@ -43,6 +43,11 @@ export class Tab1Page {
           name: 'date',
           type: 'date',
           placeholder: 'Fecha'
+        },
+        {
+          name: 'reminder_time',
+          type: 'time',
+          placeholder: 'Hora'
         }
       ],
       buttons: [
@@ -85,6 +90,12 @@ export class Tab1Page {
           type: 'date',
           placeholder: 'Date',
           value: reminder.date
+        },
+        {
+          name: 'reminder_time',
+          type: 'time',
+          placeholder: 'Hora',
+          value: reminder.reminder_time
         }
       ],
       buttons: [
@@ -108,7 +119,7 @@ export class Tab1Page {
 
   async deleteReminder(id: number) {
     const alert = await this.alertController.create({
-      header: 'Confirm Delete',
+      header: 'Confirmar Borrado',
       message: 'Esta seguro de eliminar este recordatorio?',
       buttons: [
         {
@@ -129,17 +140,26 @@ export class Tab1Page {
   }
 
   async ScheduleLocalNotification(reminder: Reminder){
-
-
     await LocalNotifications.requestPermissions();
 
-    const now = new Date(reminder.date);
-    now.setHours(13, 45, 0, 0); 
+    const dateParts = reminder.date.toString().split('-');
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1;
+    const day = parseInt(dateParts[2]);
+    
+    const timeParts = reminder.reminder_time.split(':');
+    const hours = parseInt(timeParts[0]);
+    const minutes = parseInt(timeParts[1]);
+
+    const now = new Date(year, month, day, hours, minutes);
+
+    console.log('La fecha es ', now);
+
 
     const options : ScheduleOptions = {
       notifications:[
         {
-          id: 11,
+          id: Math.random() * 100,
           title: 'Recuerda pagar',
           body: 'Pago de: '+ reminder.name,
           largeBody: 'Pago de '+ reminder.name+ " por valor "+ reminder.value,
