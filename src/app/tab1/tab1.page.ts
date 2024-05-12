@@ -71,7 +71,7 @@ export class Tab1Page {
 
   async editReminder(reminder: Reminder) {
     const alert = await this.alertController.create({
-      header: 'Edit Reminder',
+      header: 'Editar Recordatorio',
       inputs: [
         {
           name: 'name',
