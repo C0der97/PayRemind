@@ -10,7 +10,7 @@ npm install -g @angular/cli @ionic/cli
 
 y finalmente ionic serve
 
-Para correr el proyecto instalar docker [text](https://docs.docker.com/desktop/install/windows-install/)
+Para correr el proyecto instalar docker [link](https://docs.docker.com/desktop/install/windows-install/)
 
 luego correr docker compose build
 
