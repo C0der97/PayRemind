@@ -22,7 +22,7 @@ jobs:
         run: npm install -g @ionic/cli
 
       - name: Install dependencies
-        run: npm install
+        run: npm install  --legacy-peer-deps
 
       - name: Build Android Debug APK
         run: |
