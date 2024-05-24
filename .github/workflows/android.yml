@@ -26,4 +26,4 @@ jobs:
 
       - name: Build Android Debug APK
         run: |
-          ionic build android --configuration=debug --no-native-run
+          ionic capacitor build android --configuration=debug --no-native-run
