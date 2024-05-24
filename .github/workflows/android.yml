@@ -29,7 +29,7 @@ jobs:
           ionic capacitor build android
 
       - name: check data
-        run: ls
+        run: cd android ls
       
 
 
