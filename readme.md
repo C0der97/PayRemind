@@ -12,6 +12,8 @@ y finalmente ionic serve
 
 Para correr el proyecto instalar docker [link](https://docs.docker.com/desktop/install/windows-install/)
 
+Usando Docker
+
 luego correr docker compose build
 
 despues docker compose up
