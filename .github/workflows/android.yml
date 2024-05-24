@@ -26,4 +26,9 @@ jobs:
 
       - name: Build Android Debug APK
         run: |
-          ionic capacitor build android --no-native-run
+          ionic capacitor build android
+      - name: Upload dev APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: app-dev
+          path: apk/app-debug.apk
