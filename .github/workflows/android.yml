@@ -30,14 +30,23 @@ jobs:
       - name: Install dependencies
         run: npm install  --legacy-peer-deps
 
-      - name: Build Android Debug APK
+      - name: Capacitor Android
         run: |
           ionic capacitor build android
 
-      - name: Check data
+      - name: Compile Debug App
         run: |
           cd android
           ./gradlew assembleDebug
+
+      - name: Check data
+        run: ls
+
+      - name: Upload dev APK
+        uses: actions/upload-artifact@v1
+        with:
+          name: app-dev
+          path: ./android/app/build/outputs/apk/debug/app-debug.apk
       
 
 
