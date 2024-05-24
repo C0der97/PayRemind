@@ -25,3 +25,9 @@ correr el comando
 docker compose down
 
 para remover contenedores
+
+abrir carpeta android y ejecutar
+
+./gradlew assembleDebug
+
+para crear apk debug
