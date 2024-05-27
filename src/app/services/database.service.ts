@@ -38,8 +38,6 @@ export class DatabaseService {
     await this.db.open();
 
     const schema = `
-    
-    DROP TABLE IF EXISTS reminders;
     CREATE TABLE IF NOT EXISTS reminders (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,

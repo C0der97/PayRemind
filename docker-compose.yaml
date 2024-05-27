@@ -1,0 +1,8 @@
+services:
+  ionic-app:
+    build: .
+    ports:
+      - "8100:8100"
+    volumes:
+      - .:/usr/src/app-ionic
+    command: sh -c "ionic serve --host 0.0.0.0"
