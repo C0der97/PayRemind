@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Historico de Pagos
+      Historial de Pagos
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,9 +9,19 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Historico</ion-title>
+      <ion-title size="large">Historiallll</ion-title>
     </ion-toolbar>
   </ion-header>
-
-
+  <ion-list>
+    <ion-list-header>Lista de pagos</ion-list-header>
+    
+      <ion-item *ngFor="let reminder of reminders()">
+        <ion-label>{{ reminder.date }}</ion-label>
+        <ion-label>{{ reminder.name }}</ion-label>
+        <ion-label>{{ reminder.value }}</ion-label>
+        <ion-label>{{ reminder.reminder_time}}</ion-label>
+        <ion-checkbox color="success"></ion-checkbox>
+      </ion-item>
+    
+  </ion-list>
 </ion-content>

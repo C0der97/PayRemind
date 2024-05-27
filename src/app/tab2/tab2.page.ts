@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { DatabaseService } from '../services/database.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -6,7 +8,17 @@ import { Component } from '@angular/core';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
+  reminders = this.database.getReminders();
+  constructor(private database: DatabaseService, private alertController: AlertController) {
 
-  constructor() {}
+  }
+  async ionViewWillEnter() {
+    await this.database.initializeConnnection();
+    this.loadReminders();
+  }
+
+  async loadReminders() {
+    this.reminders = this.database.getReminders();
+  }
 
 }
