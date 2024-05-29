@@ -57,10 +57,15 @@ export class Tab1Page {
         },
         {
           text: 'Guardar',
-          handler:(data)=>{
+          handler:async (data)=>{
             if(data.name.trim().length===0 || data.value.trim().length===0 || data.date.trim().length===0 || data.reminder_time.trim().length===0)
-              {alert.message='No puede haber campos vacios, Complete los campos';
+              {
+                alert.message='No puede haber campos vacios, Complete los campos';
                 return false;
+              }else{
+              await this.database.addReminder(data);
+              this.loadReminders();
+              this.ScheduleLocalNotification(data);
               }
               console.log('Nombre ingresado:date.name');
               return true;
@@ -114,9 +119,17 @@ export class Tab1Page {
         {
           text: 'Guardar',
           handler: async (data) => {
-            data.id = reminder.id; // Pass the id of the reminder being edited
-            await this.database.updateReminder(data);
-            this.loadReminders();
+            
+            if(data.name.trim().length===0 || data.value.trim().length===0 || data.date.trim().length===0 || data.reminder_time.trim().length===0)
+              {
+                alert.message='No puede haber campos vacios, Complete los campos';
+                return false;
+              }else{
+                data.id = reminder.id; // Pass the id of the reminder being edited
+                await this.database.updateReminder(data);
+                this.loadReminders();
+              }
+              return true;
           }
         }
       ]
