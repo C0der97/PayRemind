@@ -57,11 +57,19 @@ export class Tab1Page {
         },
         {
           text: 'Guardar',
-          handler: async (data) => {
-            await this.database.addReminder(data);
-            this.loadReminders();
-            this.ScheduleLocalNotification(data);
+          handler:(data)=>{
+            if(data.name.trim().length===0 || data.value.trim().length===0 || data.date.trim().length===0 || data.reminder_time.trim().length===0)
+              {alert.message='No puede haber campos vacios, Complete los campos';
+                return false;
+              }
+              console.log('Nombre ingresado:date.name');
+              return true;
           }
+          //handler: async (data) => {
+           // await this.database.addReminder(data);
+           // this.loadReminders();
+          //  this.ScheduleLocalNotification(data);
+          //}
         }
       ]
     });
