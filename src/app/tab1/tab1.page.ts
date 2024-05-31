@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DatabaseService, Reminder } from '../services/database.service';
+import { Reminder } from '../services/database.service';
 import { AlertController } from '@ionic/angular';
 import {
   LocalNotifications,

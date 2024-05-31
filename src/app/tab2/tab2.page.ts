@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DatabaseService } from '../services/database.service';
 import { AlertController } from '@ionic/angular';
 import { MediatorStorageService } from '../services/mediator-storage.service';
 

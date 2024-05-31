@@ -4,8 +4,6 @@ import {
   SQLiteConnection,
   SQLiteDBConnection,
 } from '@capacitor-community/sqlite';
-import { PaymentReminderRepository } from '../interfaces/database';
-import { Capacitor } from '@capacitor/core';
 
 const DB_REMIND = 'reminders';
 
