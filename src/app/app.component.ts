@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DatabaseService } from './services/database.service';
+import { MediatorStorageService } from './services/mediator-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +8,7 @@ import { DatabaseService } from './services/database.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private database: DatabaseService) {
+  constructor(private database: MediatorStorageService) {
     this.initApp();
   }
 

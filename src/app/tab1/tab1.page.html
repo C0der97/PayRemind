@@ -17,7 +17,7 @@
     <ion-item *ngFor="let reminder of reminders()">
       <ion-label>{{ reminder.name }}</ion-label>
       <ion-button color="primary" (click)="editReminder(reminder)">Editar</ion-button>
-      <ion-button color="danger" (click)="deleteReminder(reminder.id)">Borrar</ion-button>
+      <ion-button color="danger" (click)="deleteReminder(reminder)">Borrar</ion-button>
     </ion-item>
   </ion-list>
 
