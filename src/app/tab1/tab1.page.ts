@@ -1,20 +1,24 @@
 import { Component } from '@angular/core';
 import { DatabaseService, Reminder } from '../services/database.service';
 import { AlertController } from '@ionic/angular';
-import { LocalNotifications, ScheduleOptions } from '@capacitor/local-notifications';
+import {
+  LocalNotifications,
+  ScheduleOptions,
+} from '@capacitor/local-notifications';
+import { MediatorStorageService } from '../services/mediator-storage.service';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
-  styleUrls: ['tab1.page.scss']
+  styleUrls: ['tab1.page.scss'],
 })
 export class Tab1Page {
-
   reminders = this.database.getReminders();
 
-  constructor(private database: DatabaseService, private alertController: AlertController) {
-  
-  }
+  constructor(
+    private database: MediatorStorageService,
+    private alertController: AlertController
+  ) {}
 
   async ionViewWillEnter() {
     await this.database.initializeConnnection();
@@ -32,51 +36,56 @@ export class Tab1Page {
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Nombre'
+          placeholder: 'Nombre',
         },
         {
           name: 'value',
           type: 'number',
-          placeholder: 'Valor a Pagar'
+          placeholder: 'Valor a Pagar',
         },
         {
           name: 'date',
           type: 'date',
-          placeholder: 'Fecha'
+          placeholder: 'Fecha',
         },
         {
           name: 'reminder_time',
           type: 'time',
-          placeholder: 'Hora'
-        }
+          placeholder: 'Hora',
+        },
       ],
       buttons: [
         {
           text: 'Cancelar',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Guardar',
-          handler:async (data)=>{
-            if(data.name.trim().length===0 || data.value.trim().length===0 || data.date.trim().length===0 || data.reminder_time.trim().length===0)
-              {
-                alert.message='No puede haber campos vacios, Complete los campos';
-                return false;
-              }else{
+          handler: async (data) => {
+            if (
+              data.name.trim().length === 0 ||
+              data.value.trim().length === 0 ||
+              data.date.trim().length === 0 ||
+              data.reminder_time.trim().length === 0
+            ) {
+              alert.message =
+                'No puede haber campos vacios, Complete los campos';
+              return false;
+            } else {
               await this.database.addReminder(data);
               this.loadReminders();
               this.ScheduleLocalNotification(data);
-              }
-              console.log('Nombre ingresado:date.name');
-              return true;
-          }
+            }
+            console.log('Nombre ingresado:date.name');
+            return true;
+          },
           //handler: async (data) => {
-           // await this.database.addReminder(data);
-           // this.loadReminders();
+          // await this.database.addReminder(data);
+          // this.loadReminders();
           //  this.ScheduleLocalNotification(data);
           //}
-        }
-      ]
+        },
+      ],
     });
 
     await alert.present();
@@ -90,84 +99,90 @@ export class Tab1Page {
           name: 'name',
           type: 'text',
           placeholder: 'Name',
-          value: reminder.name
+          value: reminder.name,
         },
         {
           name: 'value',
           type: 'number',
           placeholder: 'Value',
-          value: reminder.value
+          value: reminder.value,
         },
         {
           name: 'date',
           type: 'date',
           placeholder: 'Date',
-          value: reminder.date
+          value: reminder.date,
         },
         {
           name: 'reminder_time',
           type: 'time',
           placeholder: 'Hora',
-          value: reminder.reminder_time
-        }
+          value: reminder.reminder_time,
+        },
       ],
       buttons: [
         {
           text: 'Cancelar',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Guardar',
           handler: async (data) => {
-            
-            if(data.name.trim().length===0 || data.value.trim().length===0 || data.date.trim().length===0 || data.reminder_time.trim().length===0)
-              {
-                alert.message='No puede haber campos vacios, Complete los campos';
-                return false;
-              }else{
-                data.id = reminder.id; // Pass the id of the reminder being edited
-                await this.database.updateReminder(data);
-                this.loadReminders();
-              }
-              return true;
-          }
-        }
-      ]
+            if (
+              data.name.trim().length === 0 ||
+              data.value.trim().length === 0 ||
+              data.date.trim().length === 0 ||
+              data.reminder_time.trim().length === 0
+            ) {
+              alert.message =
+                'No puede haber campos vacios, Complete los campos';
+              return false;
+            } else {
+              data.id = reminder.id;
+              await this.database.updateReminder(data);
+              this.loadReminders();
+              this.ScheduleLocalNotification(data);
+            }
+            return true;
+          },
+        },
+      ],
     });
 
     await alert.present();
   }
 
-  async deleteReminder(id: number) {
+  async deleteReminder(reminder: Reminder) {
     const alert = await this.alertController.create({
       header: 'Confirmar Borrado',
       message: 'Esta seguro de eliminar este recordatorio?',
       buttons: [
         {
           text: 'Cancelar',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Borrar',
           handler: async () => {
-            await this.database.deleteReminder(id);
+            const { id, uuid } = reminder;
+            await this.database.deleteReminder({id, uuid: (uuid ?? '')});
             this.loadReminders();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
   }
 
-  async ScheduleLocalNotification(reminder: Reminder){
+  async ScheduleLocalNotification(reminder: Reminder) {
     await LocalNotifications.requestPermissions();
 
     const dateParts = reminder.date.toString().split('-');
     const year = parseInt(dateParts[0]);
     const month = parseInt(dateParts[1]) - 1;
     const day = parseInt(dateParts[2]);
-    
+
     const timeParts = reminder.reminder_time.split(':');
     const hours = parseInt(timeParts[0]);
     const minutes = parseInt(timeParts[1]);
@@ -176,27 +191,26 @@ export class Tab1Page {
 
     console.log('La fecha es ', now);
 
-
-    const options : ScheduleOptions = {
-      notifications:[
+    const options: ScheduleOptions = {
+      notifications: [
         {
           id: Math.random() * 100,
           title: 'Recuerda pagar',
-          body: 'Pago de: '+ reminder.name,
-          largeBody: 'Pago de '+ reminder.name+ " por valor "+ reminder.value,
-          summaryText: 'Recuerda pagar tu '+reminder.name,
+          body: 'Pago de: ' + reminder.name,
+          largeBody:
+            'Pago de ' + reminder.name + ' por valor ' + reminder.value,
+          summaryText: 'Recuerda pagar tu ' + reminder.name,
           schedule: {
-            at: now
-          }
-        }
-      ]
+            at: now,
+          },
+        },
+      ],
     };
 
-    try{
+    try {
       await LocalNotifications.schedule(options);
-    }catch(ex){
+    } catch (ex) {
       alert(JSON.stringify(ex));
     }
-
   }
 }

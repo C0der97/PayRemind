@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { DatabaseService } from '../services/database.service';
 import { AlertController } from '@ionic/angular';
+import { MediatorStorageService } from '../services/mediator-storage.service';
 
 @Component({
   selector: 'app-tab2',
@@ -9,7 +10,7 @@ import { AlertController } from '@ionic/angular';
 })
 export class Tab2Page {
   reminders = this.database.getReminders();
-  constructor(private database: DatabaseService, private alertController: AlertController) {
+  constructor(private database: MediatorStorageService, private alertController: AlertController) {
 
   }
   async ionViewWillEnter() {
