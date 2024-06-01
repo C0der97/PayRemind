@@ -121,4 +121,14 @@ export class DatabaseService {
     this.loadReminders();
     return result;
   }
+
+  async getLastInsertId() : Promise<number> {
+    const result = await this.db.query('SELECT last_insert_rowid() as lastId');
+    console.log('result lastinseted', result)
+    if (result.values && result.values.length > 0) {
+      return result.values[0].lastId;
+    } else {
+      return 0;
+    }
+  }
 }

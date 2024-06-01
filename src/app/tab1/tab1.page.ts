@@ -22,7 +22,6 @@ export class Tab1Page {
   ) {}
 
   async ionViewWillEnter() {
-    await this.database.initializeConnnection();
     this.loadReminders();
   }
 
@@ -62,11 +61,11 @@ export class Tab1Page {
         },
         {
           text: 'Guardar',
-          handler: async (data) => {
+          handler: async (data :Reminder) => {
             if (
               data.name.trim().length === 0 ||
-              data.value.trim().length === 0 ||
-              data.date.trim().length === 0 ||
+              data.value.toString().length === 0 ||
+              data.date.toString().length === 0 ||
               data.reminder_time.trim().length === 0
             ) {
               alert.message =
@@ -75,9 +74,10 @@ export class Tab1Page {
             } else {
               await this.database.addReminder(data);
               this.loadReminders();
+              let lastInsertedId = await this.database.getLastInsertedId();
+              data.id = lastInsertedId;
               this.ScheduleLocalNotification(data);
             }
-            console.log('Nombre ingresado:date.name');
             return true;
           },
           //handler: async (data) => {
@@ -128,11 +128,12 @@ export class Tab1Page {
         },
         {
           text: 'Guardar',
-          handler: async (data) => {
+          handler: async (data:Reminder) => {
+            console.log('datos for edit', data)
             if (
               data.name.trim().length === 0 ||
-              data.value.trim().length === 0 ||
-              data.date.trim().length === 0 ||
+              data.value.toString().length === 0 ||
+              data.date.toString().length === 0 ||
               data.reminder_time.trim().length === 0
             ) {
               alert.message =
@@ -190,7 +191,7 @@ export class Tab1Page {
         {
           text: 'Pagar',
           handler: async () => {
-            const { id } = reminder;
+            const id  = reminder.id;
             await this.cancelNotificationById(id);
             await this.database.payReminder(reminder);
             await this.loadReminders();
