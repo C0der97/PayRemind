@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Reminder } from '../services/database.service';
 import { AlertController } from '@ionic/angular';
 import {
+  CancelOptions,
   LocalNotifications,
   ScheduleOptions,
 } from '@capacitor/local-notifications';
@@ -139,6 +140,7 @@ export class Tab1Page {
               return false;
             } else {
               data.id = reminder.id;
+              await this.cancelNotificationById(data.id);
               await this.database.updateReminder(data);
               this.loadReminders();
               this.ScheduleLocalNotification(data);
@@ -165,6 +167,7 @@ export class Tab1Page {
           text: 'Borrar',
           handler: async () => {
             const { id, uuid } = reminder;
+            await this.cancelNotificationById(id);
             await this.database.deleteReminder({id, uuid: (uuid ?? '')});
             this.loadReminders();
           },
@@ -212,5 +215,23 @@ export class Tab1Page {
     } catch (ex) {
       alert(JSON.stringify(ex));
     }
+  }
+
+ async cancelNotificationById(notificationId: number) {
+
+    let options: CancelOptions = {
+      notifications:[{
+        id: notificationId
+      }
+      ]
+    };
+
+    await LocalNotifications.cancel(options)
+      .then(() => {
+        console.log('Notification canceled successfully');
+      })
+      .catch((err) => {
+        console.error('Error canceling notification:', err);
+      });
   }
 }
