@@ -17,7 +17,7 @@ export class Tab2Page {
   }
 
   async loadReminders() {
-    this.reminders = this.database.getReminders();
+    this.reminders = this.database.getRemindersPayed();
   }
 
 }
