@@ -9,7 +9,6 @@ import { nanoid } from 'nanoid';
 export class SessionStorageService implements PaymentReminderRepository {
   constructor() {}
   private reminder: WritableSignal<Reminder[]> = signal<Reminder[]>([]);
-  
 
   async initializeConnnection() {
     this.loadReminders();
@@ -54,6 +53,19 @@ export class SessionStorageService implements PaymentReminderRepository {
       (reminder: Reminder) => reminder.uuid !== uuid
     );
     this.reminder.set(updatedReminders);
+    this.saveEmployeesToStorage(updatedReminders);
     this.loadReminders();
   }
+
+  async payReminder(reminder: Reminder) {
+    const reminders = this.reminder();
+    reminder.payment_done = true;
+    const remindersEdited = reminders.map((_reminder: Reminder) => {
+      return _reminder.uuid === reminder.uuid ? reminder : _reminder;
+    });
+    this.saveEmployeesToStorage(remindersEdited);
+    this.loadReminders();
+  }
+
+
 }
