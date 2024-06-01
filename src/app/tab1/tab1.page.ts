@@ -178,6 +178,30 @@ export class Tab1Page {
     await alert.present();
   }
 
+  async payReminder(reminder: Reminder) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar Pago',
+      message: 'Esta seguro de marcar este recordatorio como pagado?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Pagar',
+          handler: async () => {
+            const { id } = reminder;
+            await this.cancelNotificationById(id);
+            await this.database.payReminder(reminder);
+            await this.loadReminders();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
   async ScheduleLocalNotification(reminder: Reminder) {
     await LocalNotifications.requestPermissions();
 

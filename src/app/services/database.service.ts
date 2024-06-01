@@ -109,4 +109,16 @@ export class DatabaseService {
     this.loadReminders();
     return result;
   }
+
+  async payReminder(reminder: Reminder) {
+    reminder.payment_done = true;
+    const { id, payment_done } = reminder;
+    const result = await this.db.run(
+      `UPDATE reminders SET  payment_done = ? WHERE id = ?`,
+      [payment_done, id]
+    );
+
+    this.loadReminders();
+    return result;
+  }
 }
