@@ -194,7 +194,7 @@ export class Tab1Page {
     const options: ScheduleOptions = {
       notifications: [
         {
-          id: Math.random() * 100,
+          id: reminder.id,
           title: 'Recuerda pagar',
           body: 'Pago de: ' + reminder.name,
           largeBody:

@@ -8,7 +8,7 @@ import { MediatorStorageService } from '../services/mediator-storage.service';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
-  reminders = this.database.getReminders();
+  reminders = this.database.getRemindersPayed();
   constructor(private database: MediatorStorageService, private alertController: AlertController) {
 
   }

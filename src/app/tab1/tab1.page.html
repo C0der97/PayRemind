@@ -14,13 +14,23 @@
   </ion-header>
 
   <ion-list>
-    <ion-item *ngFor="let reminder of reminders()">
-      <ion-label>{{ reminder.name }}</ion-label>
-      <ion-button color="primary" (click)="editReminder(reminder)">Editar</ion-button>
-      <ion-button color="danger" (click)="deleteReminder(reminder)">Borrar</ion-button>
-    </ion-item>
+    <ion-item-sliding *ngFor="let reminder of reminders()">
+      <ion-item>
+        <ion-label>{{ reminder.name }}</ion-label>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-button color="primary">
+          <ion-icon name="cash-outline" class="light-icon"></ion-icon>
+        </ion-button>
+        <ion-button color="secondary" (click)="editReminder(reminder)">
+          <ion-icon name="pencil-outline" class="light-icon"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="deleteReminder(reminder)">
+          <ion-icon name="trash-outline" class="light-icon"></ion-icon>
+        </ion-button>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
-
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="addNewReminder()" class="ion-color-primaryremin">
       <ion-icon name="add"></ion-icon>

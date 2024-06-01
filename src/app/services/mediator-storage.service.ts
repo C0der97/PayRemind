@@ -38,6 +38,12 @@ export class MediatorStorageService implements PaymentReminderRepository {
       : this._sessionStorageSvc.getReminders();
   }
 
+  getRemindersPayed() {
+    return this.isNative
+      ? this._dbSvc.getRemindersPayed()
+      : this._sessionStorageSvc.getReminders();
+  }
+
   async addReminder(reminder: Reminder) {
     return this.isNative
       ? await this._dbSvc.addReminder(reminder)

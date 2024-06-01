@@ -9,6 +9,7 @@ import { nanoid } from 'nanoid';
 export class SessionStorageService implements PaymentReminderRepository {
   constructor() {}
   private reminder: WritableSignal<Reminder[]> = signal<Reminder[]>([]);
+  
 
   async initializeConnnection() {
     this.loadReminders();

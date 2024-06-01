@@ -24,6 +24,7 @@ export class DatabaseService {
   private sqlLite: SQLiteConnection = new SQLiteConnection(CapacitorSQLite);
   private db!: SQLiteDBConnection;
   private reminder: WritableSignal<Reminder[]> = signal<Reminder[]>([]);
+  private reminder_payed: WritableSignal<Reminder[]> = signal<Reminder[]>([]);
 
   constructor() {}
 
@@ -61,8 +62,19 @@ export class DatabaseService {
     this.reminder.set(reminders.values || []);
   }
 
+  async loadRemindersPayed() {
+    const reminders_payed = await this.db.query(
+      'SELECT * FROM reminders where payment_done = true'
+    );
+    this.reminder_payed.set(reminders_payed.values || []);
+  }
+
   getReminders() {
     return this.reminder;
+  }
+
+  getRemindersPayed() {
+    return this.reminder_payed;
   }
 
   async addReminder(reminder: Reminder) {
