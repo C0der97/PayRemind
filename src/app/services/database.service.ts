@@ -119,6 +119,7 @@ export class DatabaseService {
     );
 
     this.loadReminders();
+    this.loadRemindersPayed();
     return result;
   }
 
