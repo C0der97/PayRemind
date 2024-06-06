@@ -23,6 +23,7 @@ export class MediatorStorageService implements PaymentReminderRepository {
       await this._dbSvc.createConnectionDB();
     }
     await this.loadReminders();
+    await this.loadRemindersPayed();
     return true;
   }
 

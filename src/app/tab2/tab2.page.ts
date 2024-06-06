@@ -13,7 +13,8 @@ export class Tab2Page {
 
   }
   async ionViewWillEnter() {
-    this.loadReminders();
+    await this.loadReminders();
+    await this.database.getRemindersPayed();
   }
 
   async loadReminders() {

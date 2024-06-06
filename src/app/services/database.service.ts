@@ -85,7 +85,8 @@ export class DatabaseService {
       [name, value, date, payment_done, reminder_time]
     );
 
-    this.loadReminders();
+    await this.loadReminders();
+    await this.loadRemindersPayed();
     return result;
   }
 
@@ -97,7 +98,8 @@ export class DatabaseService {
       [name, value, date, payment_done, reminder_time, id]
     );
 
-    this.loadReminders();
+    await this.loadReminders();
+    await this.loadRemindersPayed();
     return result;
   }
 
@@ -106,7 +108,8 @@ export class DatabaseService {
       id,
     ]);
 
-    this.loadReminders();
+    await this.loadReminders();
+    await this.loadRemindersPayed();
     return result;
   }
 
@@ -118,8 +121,8 @@ export class DatabaseService {
       [payment_done, id]
     );
 
-    this.loadReminders();
-    this.loadRemindersPayed();
+    await this.loadReminders();
+    await this.loadRemindersPayed();
     return result;
   }
 
