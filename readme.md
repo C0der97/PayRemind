@@ -33,3 +33,15 @@ abrir carpeta android y ejecutar
 ./gradlew assembleDebug
 
 para crear apk debug
+
+
+
+commandos ionic
+
+ionic serve
+
+ npm i @capacitor/assets --save-dev --legacy-peer-deps
+
+npx capacitor-assets generate --android
+
+ionic capacitor android sync 
