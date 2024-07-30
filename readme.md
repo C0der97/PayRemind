@@ -1,3 +1,11 @@
+##Alternative version in Blazor Hybrid .NET MAUI
+
+
+[PayRemind Ionic ](https://github.com/C0der97/Payremind_BlazorHybridMAUI)
+
+
+
+
 Correr sin docker
 
 npm install
