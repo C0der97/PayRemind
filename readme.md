@@ -52,4 +52,4 @@ ionic serve
 
 npx capacitor-assets generate --android
 
-ionic capacitor android sync 
+ionic capacitor sync android  
