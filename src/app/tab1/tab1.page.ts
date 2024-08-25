@@ -24,6 +24,7 @@ export class Tab1Page implements OnInit {
     private alertController: AlertController
   ) {
     this.reminders = this.database.getReminders();
+    moment.tz.setDefault(this.timeZone);
   }
 
   ngOnInit() {
@@ -105,9 +106,6 @@ export class Tab1Page implements OnInit {
           handler: async (data: {name: string; value: string; date: string; time: string}) => {
             if (this.validateReminderData(data)) {
               const newReminder: Reminder = this.createReminderFromData(data, reminder);
-
-              console.log('newReminder', newReminder)
-
               await this.saveReminder(newReminder, reminder ? true : false);
               return true;
             }
@@ -123,7 +121,7 @@ export class Tab1Page implements OnInit {
   }
 
   private createReminderFromData(data: {name: string; value: string; date: string; time: string}, existingReminder?: Reminder): Reminder {
-    return {
+    const newReminder = {
       ...(existingReminder || {}),
       name: data.name,
       value: Number(data.value),
@@ -131,11 +129,12 @@ export class Tab1Page implements OnInit {
       id: existingReminder?.id || 0,
       payment_done: false,
     };
+    console.log('newReminder', newReminder);
+    return newReminder;
   }
 
   private combineDateAndTime(date: string, time: string): string {
-    const [hours, minutes] = time.split(':');
-    return moment.tz(`${date} ${hours}:${minutes}`, 'YYYY-MM-DD HH:mm', this.timeZone).toISOString();
+    return moment.tz(`${date} ${time}`, 'YYYY-MM-DD HH:mm', this.timeZone).format();
   }
 
   private async saveReminder(reminder: Reminder, isEdit: boolean) {
@@ -197,10 +196,9 @@ export class Tab1Page implements OnInit {
   }
 
   private async scheduleLocalNotification(reminder: Reminder) {
-    const colombiaTime = moment(reminder.datetime).tz(this.timeZone).toDate();
-  
-    console.log('colombiaTime', colombiaTime)
-  
+    const reminderTime = moment(reminder.datetime).tz(this.timeZone).toDate();
+    console.log('Scheduling notification for:', moment(reminderTime).format('YYYY-MM-DD HH:mm:ss'));
+
     const options: ScheduleOptions = {
       notifications: [
         {
@@ -209,7 +207,7 @@ export class Tab1Page implements OnInit {
           body: `Pago de: ${reminder.name}`,
           largeBody: `Pago de ${reminder.name} por valor ${reminder.value}`,
           summaryText: `Recuerda pagar tu ${reminder.name}`,
-          schedule: { at: colombiaTime },
+          schedule: { at: reminderTime },
         },
       ],
     };
@@ -271,6 +269,6 @@ export class Tab1Page implements OnInit {
   }
 
   private getNextMonthDate(currentDate: string): string {
-    return moment(currentDate).tz(this.timeZone).add(1, 'month').toISOString();
+    return moment(currentDate).tz(this.timeZone).add(1, 'month').format();
   }
 }
