@@ -1,0 +1,24 @@
+.reminder-label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .reminder-name {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .reminder-value {
+    color: #666;
+  }
+  
+  .reminder-date {
+    font-size: 14px;
+    color: #888;
+  }
+
+  .reminder-time {
+    font-size: 14px;
+    color: #888;
+  }
