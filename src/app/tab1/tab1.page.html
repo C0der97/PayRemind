@@ -16,9 +16,21 @@
     @for(reminder of reminders(); track $index){
       <ion-item-sliding>
         <ion-item>
-          <ion-label>{{ reminder.name }}</ion-label>
+          <ion-label class="reminder-label">
+            <div class="reminder-name">{{ reminder.name }}</div>
+            <div class="reminder-value">{{ reminder.value }}</div>
+            <div class="reminder-date">{{ reminder.date | date:'dd-MM-yyyy'  }}</div>
+            <div class="reminder-time">{{ formatTimeWithAMPM(reminder.reminder_time) }}</div>
+          </ion-label>
         </ion-item>
         <ion-item-options side="end">
+
+          
+
+          <ion-button color="light" (click)="rescheduleNotification(reminder)">
+            <ion-icon name="refresh-outline" slot="start"></ion-icon>
+          </ion-button>
+
           <ion-button color="primary" (click)="payReminder(reminder)">
             <ion-icon name="cash-outline" class="light-icon"></ion-icon>
           </ion-button>
