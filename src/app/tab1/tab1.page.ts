@@ -7,7 +7,6 @@ import {
   ScheduleOptions,
 } from '@capacitor/local-notifications';
 import { MediatorStorageService } from '../services/mediator-storage.service';
-import { ExactAlarm } from 'custom-plugin';
 
 @Component({
   selector: 'app-tab1',
@@ -45,25 +44,6 @@ export class Tab1Page {
 
     await LocalNotifications.schedule(options);
 
-  }
-
-
-  async  checkAndRequestAlarmPermission() {
-    const { hasPermission } = await ExactAlarm.checkPermission();
-    
-    if (!hasPermission) {
-      const result = await ExactAlarm.requestPermission();
-      if (result.hasPermission) {
-        console.log('Permiso concedido');
-        // Aquí puedes proceder a programar tus alarmas exactas
-      } else {
-        console.log('Permiso denegado');
-        // Maneja el caso cuando el usuario no concede el permiso
-      }
-    } else {
-      console.log('Ya tiene permiso');
-      // Procede a programar tus alarmas exactas
-    }
   }
 
   async loadReminders() {
