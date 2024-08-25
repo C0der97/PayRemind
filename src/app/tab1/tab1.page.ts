@@ -7,6 +7,7 @@ import {
   ScheduleOptions,
 } from '@capacitor/local-notifications';
 import { MediatorStorageService } from '../services/mediator-storage.service';
+import { ExactAlarm } from 'custom-plugin';
 
 @Component({
   selector: 'app-tab1',
@@ -23,10 +24,51 @@ export class Tab1Page {
 
   async ionViewWillEnter() {
     this.loadReminders();
+
+    await LocalNotifications.requestPermissions();
+
+    const options: ScheduleOptions = {
+      notifications: [
+        {
+          id: 123133,
+          title: 'Notii',
+          body: 'Noti',
+          largeBody: 'not',
+          summaryText: 'asdad',
+          schedule: {
+            at: new Date(Date.now())
+          },
+        },
+      ],
+    };
+
+
+    await LocalNotifications.schedule(options);
+
+  }
+
+
+  async  checkAndRequestAlarmPermission() {
+    const { hasPermission } = await ExactAlarm.checkPermission();
+    
+    if (!hasPermission) {
+      const result = await ExactAlarm.requestPermission();
+      if (result.hasPermission) {
+        console.log('Permiso concedido');
+        // Aquí puedes proceder a programar tus alarmas exactas
+      } else {
+        console.log('Permiso denegado');
+        // Maneja el caso cuando el usuario no concede el permiso
+      }
+    } else {
+      console.log('Ya tiene permiso');
+      // Procede a programar tus alarmas exactas
+    }
   }
 
   async loadReminders() {
     this.reminders = this.database.getReminders();
+    
   }
 
   async addNewReminder() {
