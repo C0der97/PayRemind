@@ -13,6 +13,6 @@ export class AppComponent {
   }
 
   async initApp(){
-    await this.database.initializeConnnection();
+    await this.database.initializeConnection();
   }
 }

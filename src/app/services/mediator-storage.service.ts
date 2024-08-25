@@ -3,7 +3,7 @@ import { PaymentReminderRepository } from '../interfaces/database';
 import { DatabaseService, Reminder } from './database.service';
 import { Capacitor } from '@capacitor/core';
 import { SessionStorageService } from './session-storage.service';
-import { IDeleteReminder } from '../interfaces/reminder';
+import { WritableSignal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -18,67 +18,77 @@ export class MediatorStorageService implements PaymentReminderRepository {
     this.isNative = Capacitor.isNativePlatform();
   }
 
-  async initializeConnnection() {
+  async initializeConnection(): Promise<boolean> {
     if (this.isNative) {
-      await this._dbSvc.createConnectionDB();
+      return await this._dbSvc.createConnectionDB();
+    } else {
+      return await this._sessionStorageSvc.initializeConnection();
     }
-    await this.loadReminders();
-    await this.loadRemindersPayed();
-    return true;
   }
 
-  async loadReminders() {
-    return this.isNative
-      ? await this._dbSvc.loadReminders()
-      : await this._sessionStorageSvc.loadReminders();
+  async loadReminders(): Promise<void> {
+    if (this.isNative) {
+      await this._dbSvc.loadReminders();
+    } else {
+      await this._sessionStorageSvc.loadReminders();
+    }
   }
 
-  async loadRemindersPayed() {
-    return this.isNative
-      ? await this._dbSvc.loadRemindersPayed()
-      : await this._sessionStorageSvc.loadReminders();
+  async loadRemindersPayed(): Promise<void> {
+    if (this.isNative) {
+      await this._dbSvc.loadRemindersPayed();
+    } else {
+      await this._sessionStorageSvc.loadRemindersPayed();
+    }
   }
 
-  getReminders() {
+  getReminders(): WritableSignal<Reminder[]> {
     return this.isNative
       ? this._dbSvc.getReminders()
       : this._sessionStorageSvc.getReminders();
   }
 
-  getRemindersPayed() {
+  getRemindersPayed(): WritableSignal<Reminder[]> {
     return this.isNative
       ? this._dbSvc.getRemindersPayed()
-      : this._sessionStorageSvc.getReminders();
+      : this._sessionStorageSvc.getRemindersPayed();
   }
 
-  async addReminder(reminder: Reminder) {
-    return this.isNative
-      ? await this._dbSvc.addReminder(reminder)
-      : await this._sessionStorageSvc.addReminder(reminder);
+  async addReminder(reminder: Reminder): Promise<void> {
+    if (this.isNative) {
+      await this._dbSvc.addReminder(reminder);
+    } else {
+      await this._sessionStorageSvc.addReminder(reminder);
+    }
   }
 
-  async updateReminder(reminder: Reminder) {
-    return this.isNative
-      ? await this._dbSvc.updateReminder(reminder)
-      : await this._sessionStorageSvc.updateReminder(reminder);
+  async updateReminder(reminder: Reminder): Promise<void> {
+    if (this.isNative) {
+      await this._dbSvc.updateReminder(reminder);
+    } else {
+      await this._sessionStorageSvc.updateReminder(reminder);
+    }
   }
 
-  async deleteReminder({id, uuid}: IDeleteReminder) {
-    return this.isNative
-      ? await this._dbSvc.deleteReminder(id)
-      : await this._sessionStorageSvc.deleteReminder(uuid);
+  async deleteReminder(id: number): Promise<void> {
+    if (this.isNative) {
+      await this._dbSvc.deleteReminder(id);
+    } else {
+      await this._sessionStorageSvc.deleteReminder(id);
+    }
   }
 
-  async payReminder(reminder: Reminder) {
-    return this.isNative
-      ? await this._dbSvc.payReminder(reminder)
-      : await this._sessionStorageSvc.payReminder(reminder);
+  async payReminder(reminder: Reminder): Promise<void> {
+    if (this.isNative) {
+      await this._dbSvc.payReminder(reminder);
+    } else {
+      await this._sessionStorageSvc.payReminder(reminder);
+    }
   }
 
-  async getLastInsertedId() {
+  async getLastInsertId(): Promise<number> {
     return this.isNative
       ? await this._dbSvc.getLastInsertId()
-      : 0;
+      : await this._sessionStorageSvc.getLastInsertId();
   }
-
 }

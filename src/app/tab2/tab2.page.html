@@ -12,12 +12,24 @@
       <ion-title size="large">Historial</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-card *ngFor="let reminder of reminders()">
-    <ion-card-header>
-      <ion-card-title>{{ reminder.name }}</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-     Pago de {{ reminder.value }}  en {{ reminder.date }}
-    </ion-card-content>
-  </ion-card>
+  
+  @if (reminders().length > 0) {
+    @for (reminder of reminders(); track reminder.id) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{ reminder.name }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p>Pago de {{ reminder.value | currency:'USD':'symbol':'1.2-2' }}</p>
+          <p>Fecha: {{ reminder.datetime | date:'dd/MM/yyyy HH:mm' }}</p>
+        </ion-card-content>
+      </ion-card>
+    }
+  } @else {
+    <ion-card>
+      <ion-card-content>
+        <p class="ion-text-center">No hay pagos registrados en el historial.</p>
+      </ion-card-content>
+    </ion-card>
+  }
 </ion-content>

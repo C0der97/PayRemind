@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Recordatorio de Pagos
-    </ion-title>
+    <ion-title>Recordatorio de Pagos</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,46 +10,44 @@
       <ion-title size="large">Recordatorio de Pagos</ion-title>
     </ion-toolbar>
   </ion-header>
+
   <ion-list>
-    @for(reminder of reminders(); track $index){
+    @for (reminder of reminders(); track reminder.id) {
       <ion-item-sliding>
         <ion-item>
-          <ion-label class="reminder-label">
-            <div class="reminder-name">{{ reminder.name }}</div>
-            <div class="reminder-value">{{ reminder.value }}</div>
-            <div class="reminder-date">{{ reminder.date | date:'dd-MM-yyyy'  }}</div>
-            <div class="reminder-time">{{ formatTimeWithAMPM(reminder.reminder_time) }}</div>
+          <ion-label class="ion-text-wrap">
+            <h2>{{ reminder.name }}</h2>
+            <p>Valor: {{ reminder.value | currency:'USD':'symbol':'1.2-2' }}</p>
+            <p>Fecha y hora: {{ reminder.datetime | date:'dd/MM/yyyy HH:mm':'GMT-5' }}</p>
           </ion-label>
         </ion-item>
         <ion-item-options side="end">
-
-          
-
-          <ion-button color="light" (click)="rescheduleNotification(reminder)">
-            <ion-icon name="refresh-outline" slot="start"></ion-icon>
-          </ion-button>
-
-          <ion-button color="primary" (click)="payReminder(reminder)">
-            <ion-icon name="cash-outline" class="light-icon"></ion-icon>
-          </ion-button>
-          <ion-button color="secondary" (click)="editReminder(reminder)">
-            <ion-icon name="pencil-outline" class="light-icon"></ion-icon>
-          </ion-button>
-          <ion-button color="danger" (click)="deleteReminder(reminder)">
-            <ion-icon name="trash-outline" class="light-icon"></ion-icon>
-          </ion-button>
+          <ion-item-option color="tertiary" (click)="rescheduleNotification(reminder)">
+            <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="success" (click)="payReminder(reminder)">
+            <ion-icon slot="icon-only" name="cash-outline"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="primary" (click)="editReminder(reminder)">
+            <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="deleteReminder(reminder)">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     } @empty {
-      <ion-text class="ion-text-center">
-        <p>No tienes recordatorios</p>
-      </ion-text>
+      <ion-item>
+        <ion-label class="ion-text-center">
+          No tienes recordatorios
+        </ion-label>
+      </ion-item>
     }
   </ion-list>
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="addNewReminder()" class="ion-color-primaryremin">
+    <ion-fab-button (click)="addNewReminder()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
 </ion-content>
