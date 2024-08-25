@@ -8,6 +8,7 @@ import {
 } from '@capacitor/local-notifications';
 import { MediatorStorageService } from '../services/mediator-storage.service';
 import { WritableSignal } from '@angular/core';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'app-tab1',
@@ -16,6 +17,7 @@ import { WritableSignal } from '@angular/core';
 })
 export class Tab1Page implements OnInit {
   reminders: WritableSignal<Reminder[]>;
+  timeZone: string = 'America/Bogota';
 
   constructor(
     private database: MediatorStorageService,
@@ -50,13 +52,20 @@ export class Tab1Page implements OnInit {
     await alert.present();
   }
 
+  private splitDateTime(datetime: string): [string, string] {
+    const date = moment(datetime).tz(this.timeZone);
+    return [
+      date.format('YYYY-MM-DD'),
+      date.format('HH:mm')
+    ];
+  }
+
   private async createReminderAlert(header: string, reminder?: Reminder) {
     const [dateValue, timeValue] = reminder ? this.splitDateTime(reminder.datetime) : ['', ''];
 
-
-    console.log('reminder.datetime', reminder?.datetime ?? '')
-    console.log('dateValue', dateValue)
-    console.log('timeValue', timeValue)
+    console.log('reminder.datetime', reminder?.datetime ?? '');
+    console.log('dateValue', dateValue);
+    console.log('timeValue', timeValue);
 
     return this.alertController.create({
       header,
@@ -96,6 +105,9 @@ export class Tab1Page implements OnInit {
           handler: async (data: {name: string; value: string; date: string; time: string}) => {
             if (this.validateReminderData(data)) {
               const newReminder: Reminder = this.createReminderFromData(data, reminder);
+
+              console.log('newReminder', newReminder)
+
               await this.saveReminder(newReminder, reminder ? true : false);
               return true;
             }
@@ -119,6 +131,11 @@ export class Tab1Page implements OnInit {
       id: existingReminder?.id || 0,
       payment_done: false,
     };
+  }
+
+  private combineDateAndTime(date: string, time: string): string {
+    const [hours, minutes] = time.split(':');
+    return moment.tz(`${date} ${hours}:${minutes}`, 'YYYY-MM-DD HH:mm', this.timeZone).toISOString();
   }
 
   private async saveReminder(reminder: Reminder, isEdit: boolean) {
@@ -180,9 +197,9 @@ export class Tab1Page implements OnInit {
   }
 
   private async scheduleLocalNotification(reminder: Reminder) {
-    const colombiaTime = new Date(reminder.datetime);
+    const colombiaTime = moment(reminder.datetime).tz(this.timeZone).toDate();
   
-    console.log('Scheduling notification for:', colombiaTime.toISOString());
+    console.log('colombiaTime', colombiaTime)
   
     const options: ScheduleOptions = {
       notifications: [
@@ -233,7 +250,7 @@ export class Tab1Page implements OnInit {
             const newReminder: Reminder = {
               ...reminder,
               id: 0,
-              datetime: newDate.toISOString(),
+              datetime: newDate,
               uuid: undefined,
               payment_done: false
             };
@@ -249,52 +266,11 @@ export class Tab1Page implements OnInit {
     await alert.present();
   }
 
-
-  private splitDateTime(datetime: string): [string, string] {
-    const colombiaTime = new Date(datetime);
-    
-    const dateString = colombiaTime.toISOString().split('T')[0]; // YYYY-MM-DD
-    const timeString = colombiaTime.toTimeString().slice(0, 5);  // HH:MM
-    
-    console.log('Original datetime:', datetime);
-    console.log('Colombia date:', dateString);
-    console.log('Colombia time:', timeString);
-    
-    return [dateString, timeString];
-  }
-
-  private combineDateAndTime(date: string, time: string): string {
-    const [year, month, day] = date.split('-').map(Number);
-    const [hours, minutes] = time.split(':').map(Number);
-    
-    // Crear la fecha en la zona horaria de Colombia
-    const colombiaTime = new Date(year, month - 1, day, hours, minutes);
-    
-    console.log('Combined Colombia time:', colombiaTime.toISOString());
-    
-    return colombiaTime.toISOString();
-  }
-
   formatTimeWithAMPM(datetime: string): string {
-    const colombiaTime = new Date(datetime);
-    
-    const formattedTime = colombiaTime.toLocaleTimeString('es-CO', { 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      hour12: true,
-      timeZone: 'America/Bogota'
-    });
-    
-    console.log('Original datetime:', datetime);
-    console.log('Formatted Colombia time:', formattedTime);
-    
-    return formattedTime;
+    return moment(datetime).tz(this.timeZone).format('hh:mm A');
   }
 
   private getNextMonthDate(currentDate: string): string {
-    const date = new Date(currentDate);
-    date.setMonth(date.getMonth() + 1);
-    return date.toISOString();
+    return moment(currentDate).tz(this.timeZone).add(1, 'month').toISOString();
   }
-
 }
