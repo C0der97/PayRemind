@@ -4,7 +4,11 @@
 [PayRemind Blazor Hybrid MAUI](https://github.com/C0der97/Payremind_BlazorHybridMAUI)
 
 
-
+Archivo	
+android/payremind-release.keystore
+Alias	payremind
+Contraseña (store y key)	payremind123
+Validez	10,000 días (~27 años)
 
 Correr sin docker
 
