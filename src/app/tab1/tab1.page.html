@@ -1,32 +1,112 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Recordatorio de Pagos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="showFilterOptions()">
+        <ion-icon slot="icon-only" name="filter-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Recordatorio de Pagos</ion-title>
+      <ion-title size="large">Recordatorios</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <ion-list>
-    @for (reminder of reminders(); track reminder.id) {
+  <!-- Filter chips -->
+  @if (selectedCategoryId !== null) {
+    <div class="filter-bar">
+      <ion-chip color="primary" (click)="clearFilter()">
+        <ion-icon name="close-circle"></ion-icon>
+        <ion-label>{{ getCategoryById(selectedCategoryId)?.name }}</ion-label>
+      </ion-chip>
+    </div>
+  }
+
+  <!-- Sort buttons -->
+  <ion-segment [value]="sortBy" (ionChange)="onSortChange($event)" class="sort-segment">
+    <ion-segment-button value="date">
+      <ion-label>Fecha</ion-label>
+      @if (sortBy === 'date') {
+        <ion-icon [name]="sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+      }
+    </ion-segment-button>
+    <ion-segment-button value="value">
+      <ion-label>Valor</ion-label>
+      @if (sortBy === 'value') {
+        <ion-icon [name]="sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+      }
+    </ion-segment-button>
+    <ion-segment-button value="name">
+      <ion-label>Nombre</ion-label>
+      @if (sortBy === 'name') {
+        <ion-icon [name]="sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'"></ion-icon>
+      }
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-list class="reminders-list">
+    @for (reminder of filteredReminders; track reminder.id) {
       <ion-item-sliding>
-        <ion-item>
+        <ion-item class="reminder-item" [style.--category-color]="getCategoryById(reminder.categoryId)?.color || '#4bfed4'">
+          <div class="category-indicator" [style.background-color]="getCategoryById(reminder.categoryId)?.color || '#4bfed4'"></div>
+          
           <ion-label class="ion-text-wrap">
-            <h2>{{ reminder.name }}</h2>
-            <p>Valor: {{ reminder.value | currency:'USD':'symbol':'1.2-2' }}</p>
-            <p>Fecha y hora: {{ reminder.datetime | date:'dd/MM/yyyy HH:mm':'GMT-5' }}</p>
+            <div class="reminder-header">
+              <h2 class="reminder-name">{{ reminder.name }}</h2>
+              @if (getDueBadge(reminder.datetime); as badge) {
+                <ion-badge [color]="badge.color" class="due-badge">{{ badge.text }}</ion-badge>
+              }
+            </div>
+            
+            <div class="reminder-details">
+              <p class="reminder-value">
+                <ion-icon name="cash-outline"></ion-icon>
+                {{ reminder.value | currency:currencyCode:'symbol':'1.0-0' }}
+              </p>
+              <p class="reminder-date">
+                <ion-icon name="calendar-outline"></ion-icon>
+                {{ formatDate(reminder.datetime) }}
+              </p>
+              <p class="reminder-time">
+                <ion-icon name="time-outline"></ion-icon>
+                {{ formatTimeWithAMPM(reminder.datetime) }}
+              </p>
+            </div>
+
+            <div class="reminder-meta">
+              @if (getCategoryById(reminder.categoryId); as category) {
+                <ion-chip [style.--background]="category.color + '33'" class="category-chip" (click)="filterByCategory(category.id); $event.stopPropagation()">
+                  <ion-icon [name]="category.icon" [style.color]="category.color"></ion-icon>
+                  <ion-label>{{ category.name }}</ion-label>
+                </ion-chip>
+              }
+              @if (reminder.recurrence && reminder.recurrence !== 'none') {
+                <ion-chip color="tertiary" class="recurrence-chip">
+                  <ion-icon name="repeat"></ion-icon>
+                  <ion-label>{{ getRecurrenceLabel(reminder.recurrence) }}</ion-label>
+                </ion-chip>
+              }
+            </div>
+
+            @if (reminder.notes) {
+              <p class="reminder-notes">
+                <ion-icon name="document-text-outline"></ion-icon>
+                {{ reminder.notes }}
+              </p>
+            }
           </ion-label>
         </ion-item>
+        
         <ion-item-options side="end">
           <ion-item-option color="tertiary" (click)="rescheduleNotification(reminder)">
             <ion-icon slot="icon-only" name="refresh-outline"></ion-icon>
           </ion-item-option>
           <ion-item-option color="success" (click)="payReminder(reminder)">
-            <ion-icon slot="icon-only" name="cash-outline"></ion-icon>
+            <ion-icon slot="icon-only" name="checkmark-circle-outline"></ion-icon>
           </ion-item-option>
           <ion-item-option color="primary" (click)="editReminder(reminder)">
             <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
@@ -37,11 +117,11 @@
         </ion-item-options>
       </ion-item-sliding>
     } @empty {
-      <ion-item>
-        <ion-label class="ion-text-center">
-          No tienes recordatorios
-        </ion-label>
-      </ion-item>
+      <div class="empty-state">
+        <ion-icon name="calendar-outline" class="empty-icon"></ion-icon>
+        <h3>No tienes recordatorios</h3>
+        <p>Toca el botón + para crear tu primer recordatorio de pago</p>
+      </div>
     }
   </ion-list>
 

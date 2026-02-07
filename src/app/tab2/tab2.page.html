@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Historial de Pagos
-    </ion-title>
+    <ion-title>Historial de Pagos</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,24 +10,70 @@
       <ion-title size="large">Historial</ion-title>
     </ion-toolbar>
   </ion-header>
-  
-  @if (reminders().length > 0) {
-    @for (reminder of reminders(); track reminder.id) {
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>{{ reminder.name }}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p>Pago de {{ reminder.value | currency:'USD':'symbol':'1.2-2' }}</p>
-          <p>Fecha: {{ reminder.datetime | date:'dd/MM/yyyy HH:mm' }}</p>
-        </ion-card-content>
-      </ion-card>
-    }
-  } @else {
-    <ion-card>
+
+  <!-- Summary Cards -->
+  <div class="summary-container">
+    <ion-card class="summary-card">
       <ion-card-content>
-        <p class="ion-text-center">No hay pagos registrados en el historial.</p>
+        <div class="summary-icon">
+          <ion-icon name="wallet-outline"></ion-icon>
+        </div>
+        <div class="summary-info">
+          <span class="summary-label">Este mes</span>
+          <span class="summary-value">{{ thisMonthPaid | currency:currencyCode:'symbol':'1.0-0' }}</span>
+        </div>
       </ion-card-content>
     </ion-card>
-  }
+
+    <ion-card class="summary-card">
+      <ion-card-content>
+        <div class="summary-icon total">
+          <ion-icon name="trending-up-outline"></ion-icon>
+        </div>
+        <div class="summary-info">
+          <span class="summary-label">Total pagado</span>
+          <span class="summary-value">{{ totalPaid | currency:currencyCode:'symbol':'1.0-0' }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Payment History List -->
+  <ion-list-header>
+    <ion-label>Pagos realizados</ion-label>
+  </ion-list-header>
+
+  <ion-list>
+    @for (reminder of reminders(); track reminder.id) {
+    <ion-item class="history-item">
+      <div class="category-dot" [style.background-color]="getCategoryById(reminder.categoryId)?.color || '#92949c'"
+        slot="start">
+      </div>
+      <ion-label>
+        <h2>{{ reminder.name }}</h2>
+        <p class="history-meta">
+          <ion-icon name="calendar-outline"></ion-icon>
+          {{ formatDate(reminder.datetime) }}
+          @if (getCategoryById(reminder.categoryId); as category) {
+          <span class="category-tag">
+            <ion-icon [name]="category.icon"></ion-icon>
+            {{ category.name }}
+          </span>
+          }
+        </p>
+      </ion-label>
+      <ion-note slot="end" class="amount-note">
+        {{ reminder.value | currency:currencyCode:'symbol':'1.0-0' }}
+      </ion-note>
+    </ion-item>
+    } @empty {
+    <div class="empty-state">
+      <ion-icon name="checkmark-done-circle-outline" class="empty-icon"></ion-icon>
+      <h3>Sin historial</h3>
+      <p>Los pagos que marques como completados aparecerán aquí</p>
+    </div>
+    }
+  </ion-list>
+
+  <div class="footer-space"></div>
 </ion-content>

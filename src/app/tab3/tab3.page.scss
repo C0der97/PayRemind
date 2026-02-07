@@ -1,0 +1,70 @@
+ion-list-header {
+    ion-button {
+        --padding-start: 8px;
+        --padding-end: 8px;
+    }
+}
+
+.color-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+ion-item-sliding ion-item {
+    --padding-start: 16px;
+}
+
+ion-item {
+    ion-icon[slot="start"] {
+        margin-right: 16px;
+        font-size: 22px;
+        color: var(--ion-color-primary);
+    }
+}
+
+ion-select {
+    max-width: 100%;
+}
+
+.footer-padding {
+    height: 40px;
+}
+
+// Section styling
+ion-list-header {
+    margin-top: 16px;
+
+    ion-label {
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--ion-color-primary);
+    }
+}
+
+// Data management items
+ion-item {
+    h2 {
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    p {
+        font-size: 13px;
+    }
+}
+
+// Animations
+ion-item-sliding {
+    transition: transform 0.2s ease;
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+    .color-preview {
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+}
